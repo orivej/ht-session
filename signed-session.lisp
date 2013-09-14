@@ -41,19 +41,12 @@ session expires if it's not used.")))
 (defun signed-session-value (symbol)
   (when *session*
     (gethash symbol (session-data *session*))))
+
 (defun (setf signed-session-value) (value symbol)
   (unless *session*
     (setf *session* (make-instance 'signed-session)))
   (setf (gethash symbol (session-data *session*)) value))
+
 (defun delete-signed-session-value (symbol)
   (when *session*
     (remhash symbol (session-data *session*))))
-
-(defmethod %session-value (symbol (session signed-session))
-  (gethash symbol (session-data session)))
-(defmethod (setf %session-value) (value symbol session (request signed-session-request-mixin))
-  (unless session
-    (setf session (setf (session request) (setf *session* (make-instance 'signed-session)))))
-  (setf (gethash symbol (session-data session)) value))
-(defmethod %delete-session-value (symbol (session signed-session))
-  (remhash symbol (session-data session)))
