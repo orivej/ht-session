@@ -1,6 +1,5 @@
 (defpackage ht-session
-  (:use cl alexandria hunchentoot ironclad)
-  (:shadowing-import-from cl null)
+  (:use cl alexandria hunchentoot sha3)
   (:export *signing-key*
            randomize-signing-key
            sign-cookie-value

@@ -1,5 +1,5 @@
 (asdf:defsystem ht-session
-  :depends-on (alexandria hunchentoot ironclad babel binascii)
+  :depends-on (alexandria hunchentoot sha3 babel binascii)
   :serial t
   :components ((:file "package")
                (:file "z85")
