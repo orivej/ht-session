@@ -12,7 +12,7 @@
 
 (defun signature (string &key (start 0))
   (unless (boundp '*signing-key*)
-    (log-message* :warn "Session secret is unbound.  Using Lisp's RANDOM function to initialize it.")
+    (log-message* :warn "Signing key is unbound.  Using Lisp's RANDOM function to initialize it.")
     (randomize-signing-key))
   (let ((state (sha3-init :output-bit-length (* 8 +hash-size+))))
     (sha3-update state (babel:string-to-octets string :start start))
