@@ -22,7 +22,7 @@ session expires if it's not used.")))
     (when session-string
       (let ((session-list (read-from-string session-string)))
         (when (<= (get-universal-time) (first session-list))
-          (make-instance 'signed-session :session-data (plist-hash-table(rest session-list))))))))
+          (make-instance 'signed-session :session-data (plist-hash-table (rest session-list))))))))
 
 (defmethod session-cookie-value ((session signed-session))
   (let ((*print-pretty* nil))
