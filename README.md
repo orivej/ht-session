@@ -20,14 +20,14 @@ something you did not put there first.
 
 The nature of signed cookies is such that the server can verify that
 the cookie was indeed placed by the server, but can not ascertain from
-the cookie itself whether it was the latest placed one or not.
+the cookie itself whether it was placed the latest or not.
 
 There is a built-in mechanism of expiration (with expiration date
 encoded in the cookie), but until the cookie is expired, it is valid.
 
 This limits the scope of data which is safe to store in a signed cookie to:
 
-- data which affects no one but the user with the cookie
+- data which affects no one but the client with the cookie
 - data which can forever be associated with the client
 
 The latter includes a client ID in your database, unless you need to
@@ -46,13 +46,14 @@ cookie is revoked, in case you do need revocation.
 (in-package hts-user)
 ```
 
-1. Specify `signed-session-request` as the request class
+(1) Specify `signed-session-request` as the request class
 
 ```lisp
 (defclass my-acceptor (ht:easy-acceptor)
   ()
   (:default-initargs
    :request-class 'hts:signed-session-request))
+```
 
 or inherit your request from `signed-session-request-mixin` (e.g. with
 [restas](https://github.com/archimag/restas) framework)
@@ -68,14 +69,14 @@ or inherit your request from `signed-session-request-mixin` (e.g. with
    :request-class 'heroku-request))
 ```
 
-2. Initialize session secret from a persistent location so that it remains the same across Lisp process restarts.  (Ignore this step to let `hts:randomize-signing-key` initialize it for you.)  Initialize session time out.
+(2) Initialize session secret from a persistent location so that it remains the same across Lisp process restarts.  (Ignore this step to let `hts:randomize-signing-key` initialize it for you.)  Initialize session time out.
 
 ```lisp
 (setf hts:*signing-key* (binascii:decode-z85 *persisted-z85-encoded-session-secret*))
 (setf ht:*session-max-time* 432000) ; 5 days
 ```
 
-3. Use signed sessions in request handlers.
+(3) Use signed sessions in request handlers.
 
 ```lisp
 (defun sess (key)
@@ -85,8 +86,7 @@ or inherit your request from `signed-session-request-mixin` (e.g. with
 
 (hunchentoot:define-easy-handler (say-yo :uri "/yo") (name)
   (setf (hunchentoot:content-type*) "text/plain")
-  (when name
-    (setf (sess :name) name))
+  (when name (setf (sess :name) name))
   (format nil "Hey~@[ ~A~]!" (sess :name)))
 
 (hunchentoot:define-easy-handler (logout :uri "/bye") ()
